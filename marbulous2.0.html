@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marbulous — Redefining Period Care</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+<style>
+
+  /* ============================================
+     LIGHT MODE (default)
+  ============================================ */
+  [data-theme="light"] {
+    --bg:           #fdf7f4;
+    --bg-card:      #f0e6e1;
+    --text:         #1a0d0d;
+    --text-muted:   #7a5a5a;
+    --accent:       #c94f6a;
+    --accent2:      #e8825a;
+    --border:       rgba(201,79,106,0.2);
+    --nav-bg:       rgba(253,247,244,0.92);
+    --input-bg:     rgba(26,13,13,0.04);
+    --input-border: rgba(26,13,13,0.12);
+    --orb-grad:     radial-gradient(circle at 35% 35%, rgba(201,79,106,0.25), rgba(232,130,90,0.15) 50%, transparent 70%);
+    --hero-grad:    radial-gradient(ellipse 60% 80% at 80% 50%, rgba(201,79,106,0.1) 0%, transparent 60%),
+                    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(232,130,90,0.07) 0%, transparent 60%);
+  }
+
+  /* ============================================
+     DARK MODE
+  ============================================ */
+  [data-theme="dark"] {
+    --bg:           #0a0a0a;
+    --bg-card:      #161210;
+    --text:         #f5f0eb;
+    --text-muted:   #7a6e67;
+    --accent:       #c94f6a;
+    --accent2:      #e8825a;
+    --border:       rgba(201,79,106,0.2);
+    --nav-bg:       rgba(10,10,10,0.92);
+    --input-bg:     rgba(245,240,235,0.04);
+    --input-border: rgba(245,240,235,0.1);
+    --orb-grad:     radial-gradient(circle at 35% 35%, rgba(201,79,106,0.35), rgba(232,130,90,0.2) 50%, transparent 70%);
+    --hero-grad:    radial-gradient(ellipse 60% 80% at 80% 50%, rgba(201,79,106,0.12) 0%, transparent 60%),
+                    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(232,130,90,0.08) 0%, transparent 60%);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* ============================================
+     THEME TOGGLE BUTTON
+  ============================================ */
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .theme-toggle:hover { border-color: var(--accent); background: var(--bg-card); }
+
+  /* ============================================
+     NAV
+  ============================================ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 3rem;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.4s, border-color 0.4s;
+  }
+  .nav-left { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--accent); }
+
+  /* ============================================
+     HERO
+  ============================================ */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 3rem;
+    padding-top: 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: var(--hero-grad);
+    pointer-events: none;
+    transition: background 0.4s;
+  }
+  .hero-left { position: relative; z-index: 2; }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 9vw, 10rem);
+    line-height: 0.92;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.8rem;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+  .hero-title em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 0.75em;
+    display: block;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 2.8rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s forwards;
+  }
+  .hero-cta {
+    display: inline-flex; gap: 1.2rem; align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.9rem 2.2rem;
+    border: none; border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: #b03d58; transform: translateY(-2px); }
+  .btn-ghost {
+    color: var(--text);
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    opacity: 0.6;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: opacity 0.2s;
+  }
+  .btn-ghost:hover { opacity: 1; }
+
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-orb {
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: var(--orb-grad);
+    border: 1px solid var(--border);
+    position: relative;
+    opacity: 0;
+    animation: orbIn 1.2s 0.5s forwards, pulse 6s 1.7s ease-in-out infinite;
+    transition: background 0.4s, border-color 0.4s;
+  }
+  .hero-orb::before {
+    content: '';
+    position: absolute; inset: 20px;
+    border-radius: 50%;
+    border: 1px solid rgba(232,130,90,0.15);
+  }
+  .hero-orb::after {
+    content: '';
+    position: absolute; inset: 60px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,79,106,0.1);
+  }
+  .orb-label {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .orb-label-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    display: block; line-height: 1;
+  }
+  .orb-label-sub {
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-top: 0.3rem;
+  }
+  .stat-pill {
+    position: absolute;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 0.7rem 1.3rem;
+    font-size: 0.75rem;
+    color: var(--text);
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+    transition: background 0.4s, color 0.4s;
+  }
+  .stat-pill strong { color: var(--accent); font-size: 1.1rem; display: block; font-weight: 500; }
+  .stat-pill:nth-child(2) { top: 12%; right: -5%; }
+  .stat-pill:nth-child(3) { bottom: 18%; left: -8%; }
+  .stat-pill:nth-child(4) { bottom: 8%; right: 5%; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes orbIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.03); }
+  }
+
+  /* ============================================
+     SECTION COMMONS
+  ============================================ */
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  .section-title em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* ============================================
+     ABOUT
+  ============================================ */
+  #about {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 7rem 3rem;
+    transition: background 0.4s;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .about-body { font-size: 1rem; line-height: 1.85; color: var(--text-muted); }
+  .about-body p + p { margin-top: 1.2rem; }
+  .about-body strong { color: var(--text); font-weight: 500; }
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .stat-box { border-top: 2px solid var(--accent); padding-top: 1rem; }
+  .stat-box .num { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--text); line-height: 1; }
+  .stat-box .desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+  /* ============================================
+     TECHNOLOGY
+  ============================================ */
+  #technology { padding: 7rem 3rem; }
+  .tech-inner { max-width: 1200px; margin: 0 auto; }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 4rem;
+  }
+  .tech-card {
+    background: var(--bg);
+    padding: 2.5rem;
+    transition: background 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .tech-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease;
+  }
+  .tech-card:hover::before { transform: scaleX(1); }
+  .tech-card:hover { background: var(--bg-card); }
+  .tech-icon { font-size: 2rem; margin-bottom: 1.2rem; display: block; }
+  .tech-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.8rem; }
+  .tech-card p { font-size: 0.88rem; line-height: 1.75; color: var(--text-muted); }
+  .tech-tag {
+    display: inline-block; margin-top: 1.2rem;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem; border-radius: 2px;
+  }
+
+  /* ============================================
+     IDEAS / PROJECTS
+  ============================================ */
+  #projects {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 7rem 3rem;
+    transition: background 0.4s;
+  }
+  .projects-inner { max-width: 1200px; margin: 0 auto; }
+  .project-list { margin-top: 3.5rem; }
+  .project-item {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    align-items: start; gap: 2rem;
+    padding: 2rem 0; border-bottom: 1px solid var(--border);
+    transition: padding-left 0.3s;
+  }
+  .project-item:hover { padding-left: 1rem; }
+  .project-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--border); line-height: 1; transition: color 0.3s; }
+  .project-item:hover .project-num { color: var(--accent); }
+  .project-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; color: var(--text); margin-bottom: 0.5rem; }
+  .project-desc { font-size: 0.88rem; line-height: 1.7; color: var(--text-muted); max-width: 560px; }
+  .project-badge { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.4rem 0.9rem; border-radius: 40px; white-space: nowrap; margin-top: 0.4rem; }
+  .badge-live   { background: rgba(201,79,106,0.12); color: var(--accent);  border: 1px solid rgba(201,79,106,0.3); }
+  .badge-future { background: rgba(232,130,90,0.1);  color: var(--accent2); border: 1px solid rgba(232,130,90,0.25); }
+
+  /* ============================================
+     TEAM
+  ============================================ */
+  #team { padding: 7rem 3rem; }
+  .team-inner { max-width: 1200px; margin: 0 auto; }
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+  .team-card {
+    border: 1px solid var(--border); padding: 2rem;
+    position: relative; overflow: hidden;
+    background: var(--bg);
+    transition: border-color 0.3s, background 0.4s;
+  }
+  .team-card:hover { border-color: var(--accent); }
+  .team-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
+  }
+  .team-card:hover::after { transform: scaleX(1); }
+  .team-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+    color: #fff; margin-bottom: 1.2rem;
+  }
+  .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.2rem; }
+  .team-role  { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .team-bio   { font-size: 0.84rem; line-height: 1.65; color: var(--text-muted); }
+
+  /* ============================================
+     CONTACT
+  ============================================ */
+  #contact {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 7rem 3rem;
+    transition: background 0.4s;
+  }
+  .contact-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .contact-inner .section-label,
+  .contact-inner .section-title { text-align: center; }
+  .contact-body { font-size: 0.95rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 3rem; }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; text-align: left; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text);
+    padding: 0.85rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    border-radius: 2px; outline: none;
+    transition: border-color 0.2s, background 0.4s, color 0.4s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--accent); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-group select option { background: var(--bg); color: var(--text); }
+  .form-submit { margin-top: 0.5rem; text-align: center; }
+  .btn-submit {
+    background: var(--accent); color: #fff; border: none;
+    padding: 1rem 3rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 2px; cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-submit:hover { background: #b03d58; transform: translateY(-2px); }
+  .form-note { margin-top: 1rem; font-size: 0.72rem; color: var(--text-muted); }
+  .success-msg {
+    display: none;
+    background: rgba(201,79,106,0.1); border: 1px solid rgba(201,79,106,0.3);
+    padding: 1.5rem; border-radius: 2px;
+    text-align: center; color: var(--accent);
+    font-size: 0.9rem; letter-spacing: 0.05em; margin-top: 1rem;
+  }
+
+  /* ============================================
+     FOOTER
+  ============================================ */
+  footer {
+    padding: 3rem; display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border); background: var(--bg); transition: background 0.4s;
+  }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--text); }
+  .footer-copy  { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.08em; }
+
+  /* ============================================
+     SCROLL REVEAL
+  ============================================ */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <div class="nav-left">
+    <a href="#" class="nav-logo">Marbulous</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#technology">Technology</a></li>
+      <li><a href="#projects">Ideas</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+  <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">🌙</button>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-left">
+    <p class="hero-eyebrow">Period care, reimagined</p>
+    <h1 class="hero-title">
+      Marbulous
+      <em>Not improving.<br>Redefining.</em>
+    </h1>
+    <p class="hero-sub">Medical-grade heat, targeted neuromodulation, and smart absorption — all in one wearable. Move, work, and live without interruption.</p>
+    <div class="hero-cta">
+      <a href="#about" class="btn-primary">Discover More</a>
+      <a href="#contact" class="btn-ghost">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-orb">
+      <div class="orb-label">
+        <span class="orb-label-title">Hybrid<br>Care</span>
+        <span class="orb-label-sub">Heat · Vibration · Absorption</span>
+      </div>
+      <div class="stat-pill"><strong>90%</strong>experience period pain</div>
+      <div class="stat-pill"><strong>745%</strong>ROI vs disposables</div>
+      <div class="stat-pill"><strong>$85.8B</strong>global market by 2036</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="about-grid reveal">
+    <div>
+      <p class="section-label">Our Mission</p>
+      <h2 class="section-title">The problem<br><em>is real.</em></h2>
+    </div>
+    <div>
+      <div class="about-body">
+        <p>Up to <strong>90% of menstruating individuals</strong> experience painful periods. This isn't a niche issue — up to 40% of students and 45% of professionals have missed school or work due to menstrual pain.</p>
+        <p>Current solutions are <strong>bulky and restrictive</strong> — they push people to stay home and pause their lives. Disposable heat patches are wasteful. Painkillers carry systemic side effects.</p>
+        <p>Marbulous changes that. We've created <strong>high-rise compressive period underwear</strong> with a hybrid treatment system — turning everyday wear into a continuous, medical-grade pain-relief solution. A modular build lets users add the heat and vibration module in and out. <strong>Reusable, sustainable, life-changing.</strong> Nothing like this exists.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><span class="num">50%</span><p class="desc">Turn to heat therapy for relief</p></div>
+        <div class="stat-box"><span class="num">40%</span><p class="desc">Students miss school due to pain</p></div>
+        <div class="stat-box"><span class="num">45%</span><p class="desc">Professionals miss work</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TECHNOLOGY ============ -->
+<section id="technology">
+  <div class="tech-inner">
+    <div class="reveal">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-title">Dual-pathway<br><em>neuromodulation.</em></h2>
+    </div>
+    <div class="tech-grid reveal">
+      <div class="tech-card">
+        <span class="tech-icon">🌡️</span>
+        <h3>Thermal Treatment</h3>
+        <p>Carbon fiber tape delivers uniform thermal flux, inducing vasodilation in myometrial tissue. Increased blood flow accelerates clearance of prostaglandins — the primary chemical trigger for uterine contractions.</p>
+        <span class="tech-tag">Somatic Relief</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">〰️</span>
+        <h3>Vibrotactile Modulation</h3>
+        <p>Multiple LRAs spaced 4–6 cm apart stimulate cutaneous mechanoreceptors. Based on Gate Control Theory, faster mechanical signals saturate the neural pathway — blocking visceral pain transmission to the brain.</p>
+        <span class="tech-tag">Neural Perception</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">💧</span>
+        <h3>High-Capacity Absorption</h3>
+        <p>Superabsorbent polymer hydrogel sheets with 3× the capacity of a standard pad. The modular build integrates seamlessly with the treatment system — comfort and care in one garment.</p>
+        <span class="tech-tag">Protection</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">🔬</span>
+        <h3>Smart Diagnostics (Future)</h3>
+        <p>Embedded lateral flow test strips will estimate cholesterol, pH for infection detection, and protein markers for inflammation and anemia — delivering real-time non-invasive health insights.</p>
+        <span class="tech-tag">Biosensing</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">📡</span>
+        <h3>Connected Platform (Future)</h3>
+        <p>An integrated ESP32 microcontroller will sync all health data to a cell phone, transforming everyday menstrual care into a smart, connected health monitoring platform.</p>
+        <span class="tech-tag">IoT Health</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">♻️</span>
+        <h3>Sustainable Design</h3>
+        <p>Reusable and built to last. At $89–99 retail with a 40% gross margin, the product reaches payback in under 6 months — delivering a 745% ROI versus recurring disposable solutions.</p>
+        <span class="tech-tag">Eco-Forward</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IDEAS / PROJECTS ============ -->
+<section id="projects">
+  <div class="projects-inner reveal">
+    <p class="section-label">Our Ideas</p>
+    <h2 class="section-title">What we're<br><em>building.</em></h2>
+    <div class="project-list">
+      <div class="project-item">
+        <span class="project-num">01</span>
+        <div>
+          <h3 class="project-name">Marbulous Hybrid Underwear</h3>
+          <p class="project-desc">Our flagship product: high-rise compressive period underwear integrating carbon fiber heating and LRA vibration modules with superabsorbent polymer layers. Modular, reusable, and medically effective.</p>
+        </div>
+        <span class="project-badge badge-live">Core Product</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">02</span>
+        <div>
+          <h3 class="project-name">Diagnostic Pad Integration</h3>
+          <p class="project-desc">Lateral flow test strips embedded directly into the pad to estimate cholesterol levels, measure vaginal pH for early infection detection, and flag protein markers linked to inflammation and anemia.</p>
+        </div>
+        <span class="project-badge badge-future">In Development</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">03</span>
+        <div>
+          <h3 class="project-name">Marbulous Health App</h3>
+          <p class="project-desc">A companion app that syncs with the ESP32 microcontroller embedded in the garment, providing real-time data on pain relief, health markers, and personalized cycle insights.</p>
+        </div>
+        <span class="project-badge badge-future">Roadmap</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">04</span>
+        <div>
+          <h3 class="project-name">Enterprise Wellness Program</h3>
+          <p class="project-desc">Partnering with workplaces and schools to offer Marbulous as part of employee and student wellness benefits — reducing absenteeism and improving quality of life at scale.</p>
+        </div>
+        <span class="project-badge badge-future">Roadmap</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section id="team">
+  <div class="team-inner">
+    <div class="reveal">
+      <p class="section-label">The People</p>
+      <h2 class="section-title">Meet the<br><em>team.</em></h2>
+    </div>
+    <div class="team-grid reveal">
+
+      <div class="team-card">
+        <div class="team-avatar">AV</div>
+        <p class="team-name">Ana Victoria Diaz Garcia</p>
+        <p class="team-role">tbd</p>
+        <p class="team-bio">Leads the technical feasibility and engineering of Marbulous — from neuromodulation pathways to thermal and mechanical systems integration.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar">RI</div>
+        <p class="team-name">Riana Khasanova</p>
+        <p class="team-role">tbd</p>
+        <p class="team-bio">Drives the future roadmap for Marbulous — including biosensing diagnostics, smart connectivity, and building a brand around menstrual health innovation.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar">BV</div>
+        <p class="team-name">Bice Vercelli</p>
+        <p class="team-role">Tbd</p>
+        <p class="team-bio">Short bio </p>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar">MSK</div>
+        <p class="team-name">Monika Siim-Kiviloo</p>
+        <p class="team-role">tbh</p>
+        <p class="team-bio">Short bio </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <p class="section-label">Get Involved</p>
+    <h2 class="section-title">Let's<br><em>connect.</em></h2>
+    <p class="contact-body">Whether you're a potential investor, collaborator, retailer, or just someone who wants to know more — we'd love to hear from you.</p>
+
+    <form
+      class="contact-form"
+      id="contactForm"
+      action="https://formspree.io/f/xnjgbyyz"
+      method="POST"
+    >
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fname">Name</label>
+          <!--
+            name="name" is just a label tag for Formspree.
+            It tells the email "this field is called Name".
+            Every input, select, and textarea needs one — don't remove them.
+          -->
+          <input type="text" id="fname" name="name" placeholder="Your name" required />
+        </div>
+        <div class="form-group">
+          <label for="femail">Email</label>
+          <input type="email" id="femail" name="email" placeholder="your@email.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="finterest">I'm interested as a...</label>
+        <select id="finterest" name="interest">
+          <option value="">Select one</option>
+          <option>Investor</option>
+          <option>Collaborator / Partner</option>
+          <option>Retailer / Distributor</option>
+          <option>Press / Media</option>
+          <option>Customer</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fmessage">Message</label>
+        <textarea id="fmessage" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+      </div>
+      <div class="form-submit">
+        <button type="submit" class="btn-submit">Send Message</button>
+        <p class="form-note">We typically respond within 48 hours.</p>
+      </div>
+    </form>
+    <div class="success-msg" id="successMsg">✦ Message received! We'll be in touch soon.</div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-logo">Marbulous</div>
+  <p class="footer-copy">© 2025 Marbulous. Redefining what period care should be.</p>
+</footer>
+
+<script>
+  // ── THEME TOGGLE ──────────────────────────
+  const toggle = document.getElementById('themeToggle');
+  const html   = document.documentElement;
+
+  // Remember the user's last choice after page refresh
+  const saved = localStorage.getItem('marb-theme') || 'light';
+  html.setAttribute('data-theme', saved);
+  toggle.textContent = saved === 'dark' ? '☀️' : '🌙';
+
+  toggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next    = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('marb-theme', next);
+  });
+
+  // ── SCROLL REVEAL ──────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => obs.observe(el));
+
+  // ── CONTACT FORM ───────────────────────────
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(r => {
+      if (r.ok) {
+        form.style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+      }
+    });
+  });
+</script>
+</body>
+</html>
